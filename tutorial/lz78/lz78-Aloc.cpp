@@ -72,8 +72,8 @@ int locate(int i,Array *prev)
 vector<int> lzbus(const char* pattern,size_t patternlenght, Array *prev, Array *news) 
 {	
 	map <int  ,vector<int> > map1;
-	vector<int> lista;
-	int occ=0,d,f; 
+	vector<int> b;
+	int occ=0,d,f,pos; 
 	unsigned char v;
 	
 	//GENERA LOS PREFIJOS Y SE GUARDAN EN MAP1
