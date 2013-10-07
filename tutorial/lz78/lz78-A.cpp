@@ -65,29 +65,14 @@ int suma1( vector<int> pattern, int pos,  Array *prev){
 	return 0;	
 }
 
-//LOCATE DE UNA POSICION
-int locate1(int pos,Array *prev)
-{
-	if (pos == 0) {
-		return 1;
-	}
-	pos--;
-	return 1+locate1(prev->getField(pos),prev);
-}
-
-int locate(int i,Array *prev)
-{
-	int k=0;	
-	for (int j = 0; j < i-1; j++) 
-		k+=locate1(prev->getField(j),prev);  	
-	return k;
-}
 
 int lzbus(const char* pattern,size_t patternlenght, Array *prev, Array *news) 
 {
 	
 	map <int  ,vector<int> > map1;
-	int occ=0; 
+	vector<int> lista;
+	int occ=0,d,f; 
+	unsigned char v;
 	
 	//GENERA LOS PREFIJOS Y SE GUARDAN EN MAP1
 	
@@ -98,40 +83,37 @@ int lzbus(const char* pattern,size_t patternlenght, Array *prev, Array *news)
 		
 		//SE REVISA SI LA LETRA DEL PARRAFO ES IGUAL A LA ULTIMA LETRA DE LOS SUFIJOS
 		//cout<<i+1<<" ("<<prev->getField(i)<<","<<(unsigned char)news->getField(i)<<")"<<endl;
+		v = (unsigned char)news->getField(i);
+		d = prev->getField(i);	
 		for(int k=patternlenght; k>0 ;k--){			
-			if((unsigned char)news->getField(i)== pattern[k-1])
+			if(v== pattern[k-1])
 			{				
 						if( k-1==0)
 						{					
 							map1[k-1].push_back(i+1);
 							break;						
-						}
-						map<int, vector<int> >::iterator map2;						
-						map2=map1.find(k-2);			
-						for(int r=0; r < map2->second.size(); r++)
+						}	
+						
+						//SOLO HACER EL FOR CUANDO DEBE HACERLO!!	
+						for(int r=0; r < map1[k-2].size(); r++)
 						{
-							if(	prev->getField(i)	==	map2->second[r]	)
+							if( d == map1[k-2][r] )
 							{
 								map1[k-1].push_back(i+1);
-								if( k-1 == (patternlenght-1))	{occ++;}
+								if( k-1 == (patternlenght-1)) occ++;
 								break;							
-							}						
-						}						
+							}			
+						}				
 			}			
 		}
-
-		occ+=suma1(map1.find(patternlenght-1)->second,prev->getField(i),prev);
+		occ+=suma(map1.find(patternlenght-1)->second,prev->getField(i),prev);
 												
-	}
-	
+	}	
 	/*for (map<int, vector<int> >::iterator it = map1.begin(); it != map1.end(); ++it) {  
 		for(unsigned int i = 0; i < it->second.size(); i++) {
 			cout << it->first <<"->"<< it->second[i]  << endl;
 		}   
-	}*/
-	
-	
-						
+	}*/						
 	return occ;
 }
 

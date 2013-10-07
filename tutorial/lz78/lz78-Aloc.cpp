@@ -70,13 +70,11 @@ int locate(int i,Array *prev)
 }
 
 vector<int> lzbus(const char* pattern,size_t patternlenght, Array *prev, Array *news) 
-{
-	
-	map <int ,vector<int> > map1;
-	vector<int> b;
-	int pos=0,occ=0; 
-	
-	//GENERA LOS PREFIJOS Y SE GUARDAN EN MAP1
+{	
+	map <int  ,vector<int> > map1;
+	vector<int> lista;
+	int occ=0,d,f; 
+	unsigned char v;
 	
 	//GENERA LOS PREFIJOS Y SE GUARDAN EN MAP1
 	
@@ -87,19 +85,21 @@ vector<int> lzbus(const char* pattern,size_t patternlenght, Array *prev, Array *
 		
 		//SE REVISA SI LA LETRA DEL PARRAFO ES IGUAL A LA ULTIMA LETRA DE LOS SUFIJOS
 		//cout<<i+1<<" ("<<prev->getField(i)<<","<<(unsigned char)news->getField(i)<<")"<<endl;
+		v = (unsigned char)news->getField(i);
+		d = prev->getField(i);	
 		for(int k=patternlenght; k>0 ;k--){			
-			if((unsigned char)news->getField(i)== pattern[k-1])
+			if(v== pattern[k-1])
 			{				
 						if( k-1==0)
 						{					
 							map1[k-1].push_back(i+1);
 							break;						
-						}
-						map<int, vector<int> >::iterator map2;						
-						map2=map1.find(k-2);			
-						for(int r=0; r < map2->second.size(); r++)
+						}	
+						
+						//SOLO HACER EL FOR CUANDO DEBE HACERLO!!	
+						for(int r=0; r < map1[k-2].size(); r++)
 						{
-							if(	prev->getField(i)	==	map2->second[r]	)
+							if( d == map1[k-2][r] )
 							{
 								map1[k-1].push_back(i+1);
 								if( k-1 == (patternlenght-1))	{occ++; b.push_back(locate(i,prev));}
