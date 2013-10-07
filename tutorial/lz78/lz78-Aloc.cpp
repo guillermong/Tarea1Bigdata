@@ -72,60 +72,46 @@ int locate(int i,Array *prev)
 vector<int> lzbus(const char* pattern,size_t patternlenght, Array *prev, Array *news) 
 {
 	
-	map <const char * ,vector<int> > map1;
-	vector<const char *> a;
+	map <int ,vector<int> > map1;
 	vector<int> b;
 	int pos=0,occ=0; 
 	
 	//GENERA LOS PREFIJOS Y SE GUARDAN EN MAP1
 	
-	for(int k=0;k<=patternlenght;k++){
-			char * p = new char[k];
-			for(int j=0;j<=k;j++)
-			{
-				  p[j] = pattern[j];
-			 }
-			p[k] = 0;
-			a.push_back(p);
-			map1[a[k]].push_back(-2);
-	}		
+	//GENERA LOS PREFIJOS Y SE GUARDAN EN MAP1
+	
+	for(int k=0;k<patternlenght;k++)	map1[k];		
 	//RECORRE TODO EL INDEX			
 					
 	for (int i = 0; i < prev->getLength(); i++) {
 		
-		//SE REVIA SI LA LETRA DEL PARRAFO ES IGUAL A LA ULTIMA LETRA DE LOS SUFIJOS
+		//SE REVISA SI LA LETRA DEL PARRAFO ES IGUAL A LA ULTIMA LETRA DE LOS SUFIJOS
 		//cout<<i+1<<" ("<<prev->getField(i)<<","<<(unsigned char)news->getField(i)<<")"<<endl;
-		for(int k=1;k<=patternlenght;k++){
-			if((unsigned char)news->getField(i)==a[k][k-1])
-			{					
-					if(a[k][k-1]=='h')
-					{						
-						map1[a[k]].push_back(i+1);						
-					}else 
-					{
-						map<const char*, vector<int> >::iterator map2;						
-						map2=map1.find(a[k-1]);	
-										
-						for(int r=1;r<map2->second.size();r++)
-							{
+		for(int k=patternlenght; k>0 ;k--){			
+			if((unsigned char)news->getField(i)== pattern[k-1])
+			{				
+						if( k-1==0)
+						{					
+							map1[k-1].push_back(i+1);
+							break;						
+						}
+						map<int, vector<int> >::iterator map2;						
+						map2=map1.find(k-2);			
+						for(int r=0; r < map2->second.size(); r++)
+						{
 							if(	prev->getField(i)	==	map2->second[r]	)
 							{
-								map1[a[k]].push_back(i+1);
-								b.push_back(locate(i,prev));
-								if( strcmp( a[k] , pattern ) == 0 )
-								{
-									occ++;	
-								}							
-							}
-						
-						}
-					}			
-			}
-		}	
+								map1[k-1].push_back(i+1);
+								if( k-1 == (patternlenght-1))	{occ++; b.push_back(locate(i,prev));}
+								break;							
+							}						
+						}						
+			}			
+		}
 		pos=prev->getField(i);
 		while(pos>0){	
-			for( int y = 1; y < map1.find(a[patternlenght])->second.size(); y++) {
-				if(map1.find(a[patternlenght])->second[y]==pos)
+			for( int y = 0; y < map1.find(patternlenght-1)->second.size(); y++) {
+				if(map1.find(patternlenght-1)->second[y]==pos)
 					occ++;
 					b.push_back(locate(pos,prev));
 				}

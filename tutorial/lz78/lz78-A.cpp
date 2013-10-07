@@ -43,13 +43,28 @@ int suma( vector<int> pattern, int pos,  Array *prev){
 	if (pos == 0) {
 		return 0;
 	}
-	for( int i = 1; i < pattern.size(); i++) {
+	for( int i = 0; i < pattern.size(); i++) {
 	 	if(pattern[i]==pos)
 			occ++;
 		}
 	pos--;			
 	return occ+suma(pattern, prev->getField(pos),prev);	
 }
+
+int suma1( vector<int> pattern, int pos,  Array *prev){
+	int occ=0;
+	if (pos == 0) {
+		return 0;
+	}
+	for( int i = 0; i < pattern.size(); i++) {
+	 	if(pattern[i]==pos){
+			occ++;
+			return 1;
+		}
+		}			
+	return 0;	
+}
+
 //LOCATE DE UNA POSICION
 int locate1(int pos,Array *prev)
 {
@@ -71,57 +86,52 @@ int locate(int i,Array *prev)
 int lzbus(const char* pattern,size_t patternlenght, Array *prev, Array *news) 
 {
 	
-	map <const char * ,vector<int> > map1;
-	vector<const char *> a;
-	vector<int> loc;
-	int pos=0,occ=0; 
+	map <int  ,vector<int> > map1;
+	int occ=0; 
 	
 	//GENERA LOS PREFIJOS Y SE GUARDAN EN MAP1
 	
-	for(int k=0;k<=patternlenght;k++){
-			char * p = new char[k];
-			for(int j=0;j<=k;j++)
-			{
-				  p[j] = pattern[j];
-			 }
-			p[k] = 0;
-			a.push_back(p);
-			map1[a[k]].push_back(-2);
-	}		
+	for(int k=0;k<patternlenght;k++)	map1[k];		
 	//RECORRE TODO EL INDEX			
 					
 	for (int i = 0; i < prev->getLength(); i++) {
 		
 		//SE REVISA SI LA LETRA DEL PARRAFO ES IGUAL A LA ULTIMA LETRA DE LOS SUFIJOS
 		//cout<<i+1<<" ("<<prev->getField(i)<<","<<(unsigned char)news->getField(i)<<")"<<endl;
-		for(int k=1;k<=patternlenght;k++){
-			if((unsigned char)news->getField(i)==a[k][k-1])
-			{					
-					if(a[k][k-1]=='h')
-					{						
-						map1[a[k]].push_back(i+1);						
-					}else 
-					{
-						map<const char*, vector<int> >::iterator map2;						
-						map2=map1.find(a[k-1]);	
-										
-						for(int r=1;r<map2->second.size();r++)
-							{
+		for(int k=patternlenght; k>0 ;k--){			
+			if((unsigned char)news->getField(i)== pattern[k-1])
+			{				
+						if( k-1==0)
+						{					
+							map1[k-1].push_back(i+1);
+							break;						
+						}
+						map<int, vector<int> >::iterator map2;						
+						map2=map1.find(k-2);			
+						for(int r=0; r < map2->second.size(); r++)
+						{
 							if(	prev->getField(i)	==	map2->second[r]	)
 							{
-								map1[a[k]].push_back(i+1);
-								if( strcmp( a[k] , pattern ) == 0 )
-								{
-									occ++;	
-								}							
-							}
+								map1[k-1].push_back(i+1);
+								if( k-1 == (patternlenght-1))	{occ++;}
+								break;							
+							}						
+						}						
+			}			
+		}
+
+		occ+=suma1(map1.find(patternlenght-1)->second,prev->getField(i),prev);
+												
+	}
+	
+	/*for (map<int, vector<int> >::iterator it = map1.begin(); it != map1.end(); ++it) {  
+		for(unsigned int i = 0; i < it->second.size(); i++) {
+			cout << it->first <<"->"<< it->second[i]  << endl;
+		}   
+	}*/
+	
+	
 						
-						}
-					}			
-			}
-		}		
-		occ+=suma(map1.find(a[patternlenght])->second,prev->getField(i),prev);
-	}		
 	return occ;
 }
 
@@ -172,10 +182,11 @@ int main(int argc, char **argv) {
 
 
 		t1 = clock();
-		lzbus(pattern,m, prev, news);
+		cout<<lzbus(pattern,m, prev, news)<<endl;
 		t1 = clock()-t1;
 		
 		tiempo += ((float)t1)/CLOCKS_PER_SEC;
+		cout<<"Tiempo promedio(pos/(m+1)):"<< tiempo/(pos/(m+1)) <<endl;
 		pos+=m+1; 
 	}
 	cout<<"Patron Largo:"<<m<<endl;
