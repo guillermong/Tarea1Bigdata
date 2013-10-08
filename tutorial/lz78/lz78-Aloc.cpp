@@ -130,12 +130,11 @@ int main(int argc, char **argv) {
 	float tiempo=0;	
 	clock_t t1;
 	
-	if (argc != 5) {
-		cout << "usage: " << argv[0] << "<input-index> <output> <pattern-file> <pattern-lenght>" << endl;
+	if (argc != 4) {
+		cout << "usage: " << argv[0] << "<input-index> <pattern-file> <pattern-lenght>" << endl;
 		return 0;
 	}
 	char *name_input = argv[1];
-	char *name_output = argv[2];
 
 	ifstream in(name_input);
 	if (!in.good()) {
@@ -148,14 +147,14 @@ int main(int argc, char **argv) {
 
 	in.close();
 	
-	char *name_input1 = argv[3];
+	char *name_input1 = argv[2];
 	uint size = 0;
 	char *texto = LoadFile(name_input1, &size);
 	
 	uint m;
 	{
     stringstream ss;
-    ss << argv[4];
+    ss << argv[3];
     ss >> m;
 	}
 
@@ -168,13 +167,14 @@ int main(int argc, char **argv) {
 			  pattern[k] = texto[pos+k];
 		 pattern[m] = 0;
 		cout << pattern <<"|"<<m<< endl;
-	
-		//ENTREGA UN VECTOR CON LAS POSICIONES DE LOS PATRONES ENCONTRADOS
+
+
 		t1 = clock();
-		lzbus(pattern,m, prev, news);
+		cout<<lzbus(pattern,m, prev, news)<<endl;
 		t1 = clock()-t1;
 		
 		tiempo += ((float)t1)/CLOCKS_PER_SEC;
+		cout<<"Tiempo promedio(pos/(m+1)):"<< tiempo/(pos/(m+1)) <<endl;
 		pos+=m+1; 
 	}
 	cout<<"Patron Largo:"<<m<<endl;

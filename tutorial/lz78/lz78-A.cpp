@@ -130,12 +130,11 @@ int main(int argc, char **argv) {
 	float tiempo=0;	
 	clock_t t1;
 	
-	if (argc != 5) {
-		cout << "usage: " << argv[0] << "<input-index> <output> <pattern-file> <pattern-lenght>" << endl;
+	if (argc != 4) {
+		cout << "usage: " << argv[0] << "<input-index> <pattern-file> <pattern-lenght>" << endl;
 		return 0;
 	}
 	char *name_input = argv[1];
-	char *name_output = argv[2];
 
 	ifstream in(name_input);
 	if (!in.good()) {
@@ -148,14 +147,14 @@ int main(int argc, char **argv) {
 
 	in.close();
 	
-	char *name_input1 = argv[3];
+	char *name_input1 = argv[2];
 	uint size = 0;
 	char *texto = LoadFile(name_input1, &size);
 	
 	uint m;
 	{
     stringstream ss;
-    ss << argv[4];
+    ss << argv[3];
     ss >> m;
 	}
 
